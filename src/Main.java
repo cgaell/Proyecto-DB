@@ -1,4 +1,5 @@
 package src;
+import java.lang.Thread.State;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -36,6 +37,7 @@ public static void main(String[] args) {
             System.out.println("telefono: " + resultado.getString("telefono"));
             System.out.println("correo: " + resultado.getString("correo"));
             System.out.println("direccion: " + resultado.getString("direccion"));
+            System.out.println();
         }
 
         resultado.close();
@@ -44,5 +46,31 @@ public static void main(String[] args) {
     } catch (SQLException e) {
         System.out.println("Error en la consulta: " + e.getMessage());
     }
+
+    try {
+        Connection conectar = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+        String consulta2 = "SELECT idmedicos, nombreMedico, especialidad, fecha, motivo, hora FROM medico LEFT JOIN cita  ON medico.idmedicos = cita.id_medico";
+        Statement statement2 = conectar.createStatement();
+        ResultSet resultado2 = statement2.executeQuery(consulta2);
+
+        while (resultado2.next()) {
+            System.out.println("idmedicos: " + resultado2.getInt("idmedicos"));
+            System.out.println("nombreMedico: " + resultado2.getString("nombreMedico"));
+            System.out.println("especialidad: " + resultado2.getString("especialidad"));
+            System.out.println("fecha: " + resultado2.getString("fecha"));
+            System.out.println("motivo: " + resultado2.getString("motivo"));
+            System.out.println("hora: " + resultado2.getString("hora"));
+            System.out.println();
+        }
+
+        resultado2.close();
+        statement2.close();
+        conectar.close();
+    } catch (SQLException e) {
+        System.out.println("Error en la consulta: " + e.getMessage());
+    }
+
 }
+
+
 }
