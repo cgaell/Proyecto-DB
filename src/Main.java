@@ -320,7 +320,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         panel.setBackground(Color.WHITE);
 
         // Formulario
-        JTextField txtIdPaciente = new JTextField("3", 5);
+        JTextField txtIdPaciente = new JTextField("", 5);
         JTextField txtIdProducto = new JTextField(5);
         JTextField txtCantidad = new JTextField(5);
         JTextField txtPrecio = new JTextField(8);
