@@ -10,21 +10,21 @@ import java.util.Vector;
 
 public class Main extends JFrame {
 
-    // --- CONFIGURACIÓN DE BASE DE DATOS ---
+    
     public static final String DB_URL = "jdbc:mysql://localhost:3306/proyecto_medc2";
     public static final String USER = "root";
-    public static final String PASSWORD = "root"; // Asegúrate que sea tu contraseña real
+    public static final String PASSWORD = "root"; 
 
     // --- ESTILOS UI/UX ---
-    private final Color COLOR_PRIMARY = new Color(0, 120, 215);    // Azul Moderno
-    private final Color COLOR_BG = new Color(245, 245, 245);       // Gris muy claro
+    private final Color COLOR_PRIMARY = new Color(0, 120, 215);   
+    private final Color COLOR_BG = new Color(245, 245, 245);       
     private final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 14);
     private final Font FONT_TEXT = new Font("Segoe UI", Font.PLAIN, 12);
 
     public Main() {
-        // Configuración de la Ventana Principal
-        setTitle("Sistema de Gestión Hospitalaria - JDBC Completo");
-        setSize(1100, 750);
+        
+        setTitle("Sistema de Gestion Medica");
+        setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -40,12 +40,11 @@ public class Main extends JFrame {
         tabbedPane.setFont(FONT_TITLE);
         
         // --- AGREGAR PESTAÑAS ---
-        tabbedPane.addTab("1. Vistas SQL", createPanelVistas());
-        tabbedPane.addTab("2. Reportes (SP)", createPanelReportes());
-        tabbedPane.addTab("3. Inventario (Triggers)", createPanelInventario());
-        tabbedPane.addTab("4. Compras y Seguimiento", createPanelCompras());
-        tabbedPane.addTab("5. Gestión Pacientes", createPanelPacientes()); // Nueva pestaña
-
+        tabbedPane.addTab("Vistas SQL", createPanelVistas());
+        tabbedPane.addTab("Reportes (Procedimientos)", createPanelReportes());
+        tabbedPane.addTab("Inventario (Triggers)", createPanelInventario());
+        tabbedPane.addTab("Compras y Seguimiento", createPanelCompras());
+        tabbedPane.addTab("Gestión Pacientes", createPanelPacientes()); // Nueva pestaña
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         add(mainPanel);
     }
@@ -67,6 +66,11 @@ public class Main extends JFrame {
         JButton btnPacientesAsc = createStyledButton("Pacientes (Apellido ASC)");
         JButton btnMedicosEsp = createStyledButton("Médicos (Especialidad ASC)");
         JButton btnProdCant = createStyledButton("Productos (Cantidad DESC)");
+        JButton btnCitasAll = createStyledButton("Todas las Citas");
+        JButton btnPacientesAll = createStyledButton("Todos los Pacientes");
+        JButton btnMedicosAll = createStyledButton("Todos los Médicos");
+        JButton btnProdAll = createStyledButton("Todos los Productos");
+        JButton btnComprasAll = createStyledButton("Todas las Compras");
         
         // Botones de Agregación y JOINs
         JButton btnCitasMedico = createStyledButton("Total Citas por Médico");
@@ -110,6 +114,13 @@ public class Main extends JFrame {
         btnUnion.addActionListener(e -> llenarTabla(table, 
             "SELECT idcompras AS ID, cantidad FROM compras UNION SELECT idproductos AS ID, cantidad FROM productos"));
 
+            //Botones para ver todas las tablas
+        btnCitasAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM cita"));
+        btnPacientesAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM paciente"));
+        btnMedicosAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM medico"));
+        btnProdAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM productos"));
+        btnComprasAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM compras"));
+        
         btnPanel.add(btnCitasDesc);
         btnPanel.add(btnPacientesAsc);
         btnPanel.add(btnMedicosEsp);
@@ -118,6 +129,11 @@ public class Main extends JFrame {
         btnPanel.add(btnCitasMotivo);
         btnPanel.add(btnCitasConsultorio);
         btnPanel.add(btnUnion);
+        btnPanel.add(btnCitasAll);
+        btnPanel.add(btnPacientesAll);
+        btnPanel.add(btnMedicosAll);
+        btnPanel.add(btnProdAll);
+        btnPanel.add(btnComprasAll);
 
         panel.add(btnPanel, BorderLayout.NORTH);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
@@ -138,34 +154,101 @@ public class Main extends JFrame {
 
         JTextField txtFecha = new JTextField("2025-11-26", 10);
         JTextField txtAnio = new JTextField("2025", 6);
-        JTable table = createStyledTable();
+        JTable tableDetalle = createStyledTable();
+        JTable tablePromedio = createStyledTable();
 
-        JButton btnComprasDiarias = createStyledButton("SP: comprasdiarias (Fecha)");
-        JButton btnReporteClientes = createStyledButton("SP: ReporteClientes (Año)");
+        JButton btnComprasDiarias = createStyledButton("comprasdiarias (Fecha)");
+        JButton btnReporteClientes = createStyledButton("reporteclientes (Año)");
 
         // SP: comprasdiarias
         btnComprasDiarias.addActionListener(e -> {
-            ejecutarProcedimiento(table, "{CALL comprasdiarias(?)}", txtFecha.getText(), false);
+            cargarReporteConPromedio(tableDetalle, tablePromedio, txtFecha.getText());
         });
 
         // SP: ReporteClientes
         btnReporteClientes.addActionListener(e -> {
-            ejecutarProcedimiento(table, "{CALL ReporteClientes(?)}", txtAnio.getText(), true); // true porque es INT
+        ((DefaultTableModel) tablePromedio.getModel()).setRowCount(0);
+        ((DefaultTableModel) tablePromedio.getModel()).setColumnCount(0);
+            ejecutarProcedimiento(tableDetalle, "{CALL ReporteClientes(?)}", txtAnio.getText(), true); 
         });
 
         controlPanel.add(new JLabel("Fecha:"));
         controlPanel.add(txtFecha);
         controlPanel.add(btnComprasDiarias);
-        controlPanel.add(Box.createHorizontalStrut(20)); // Espacio
+        controlPanel.add(Box.createHorizontalStrut(25)); 
         controlPanel.add(new JLabel("Año:"));
         controlPanel.add(txtAnio);
         controlPanel.add(btnReporteClientes);
 
+
+        JScrollPane scrollPanelDetalle = new JScrollPane(tableDetalle);
+        scrollPanelDetalle.setBorder(BorderFactory.createTitledBorder("Detalle de Compras"));
+        
+        JScrollPane scrollPanelPromedio = new JScrollPane(tablePromedio);
+        scrollPanelPromedio.setBorder(BorderFactory.createTitledBorder("Promedio de Compras por Cliente"));
+        scrollPanelPromedio.setPreferredSize(new Dimension(0, 200));
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPanelDetalle, scrollPanelPromedio);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setDividerLocation(300);
         panel.add(controlPanel, BorderLayout.NORTH);
-        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(splitPane, BorderLayout.CENTER);
         return panel;
     }
+/**
+ * NUEVO MÉTODO AUXILIAR: Maneja múltiples resultados (ResultSets) de un SP.
+ * Llena tableDetalle con el primer SELECT y tablePromedio con el segundo.
+ */
+private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio, String fecha) {
+    DefaultTableModel modelDetalle = (DefaultTableModel) tableDetalle.getModel();
+    DefaultTableModel modelPromedio = (DefaultTableModel) tablePromedio.getModel();
+    
+    // Limpiar ambas tablas antes de cargar
+    modelDetalle.setRowCount(0); modelDetalle.setColumnCount(0);
+    modelPromedio.setRowCount(0); modelPromedio.setColumnCount(0);
 
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+         CallableStatement cstmt = conn.prepareCall("{CALL comprasdiarias(?)}")) {
+
+        cstmt.setString(1, fecha);
+        
+        // Ejecutar y verificar si hay un primer resultado
+        boolean hasResults = cstmt.execute(); 
+        int contadorTablas = 0;
+
+        // BUCLE: Recorremos todos los resultados que envíe el SP
+        while (hasResults || cstmt.getUpdateCount() != -1) {
+            if (hasResults) {
+                try (ResultSet rs = cstmt.getResultSet()) {
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int colCount = meta.getColumnCount();
+                    
+                    // LÓGICA: Si es el 1er resultado -> Detalle. Si es el 2do -> Promedio
+                    DefaultTableModel targetModel = (contadorTablas == 0) ? modelDetalle : modelPromedio;
+
+                    // Crear columnas dinámicamente
+                    for (int i = 1; i <= colCount; i++) {
+                        targetModel.addColumn(meta.getColumnLabel(i));
+                    }
+
+                    // Llenar filas
+                    while (rs.next()) {
+                        Vector<Object> row = new Vector<>();
+                        for (int i = 1; i <= colCount; i++) {
+                            row.add(rs.getObject(i));
+                        }
+                        targetModel.addRow(row);
+                    }
+                }
+                contadorTablas++;
+            }
+            // ¡IMPORTANTE! Moverse al siguiente SELECT (el promedio)
+            hasResults = cstmt.getMoreResults();
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
+    }
+}
     // =================================================================================
     // PESTAÑA 3: INVENTARIO (Trigger no_duplicados)
     // =================================================================================
