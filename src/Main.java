@@ -15,30 +15,46 @@ public class Main extends JFrame {
     public static final String USER = "root";
     public static final String PASSWORD = "root"; 
 
-    // --- ESTILOS UI/UX ---
-    private final Color COLOR_PRIMARY = new Color(0, 120, 215);   
-    private final Color COLOR_BG = new Color(245, 245, 245);       
-    private final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 14);
-    private final Font FONT_TEXT = new Font("Segoe UI", Font.PLAIN, 12);
+        // --- ESTILOS UI/UX MEJORADOS ---
+    private final Color COLOR_PRIMARY = new Color(41, 128, 185);      // Azul profesional
+    private final Color COLOR_PRIMARY_DARK = new Color(31, 97, 141);  // Azul hover
+    private final Color TEXT_COLOR = new Color(0, 0, 0);          // Gris oscuro texto
+    private final Color COLOR_SUCCESS = new Color(39, 174, 96);       // Verde éxito
+    private final Color COLOR_WARNING = new Color(243, 156, 18);      // Naranja advertencia
+    private final Color COLOR_DANGER = new Color(231, 76, 60);        // Rojo error
+    private final Color COLOR_BG = new Color(236, 240, 241);          // Gris claro fondo
+    private final Color COLOR_CARD = Color.WHITE;                     // Blanco para paneles
+    private final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 16);
+    private final Font FONT_SUBTITLE = new Font("Segoe UI", Font.BOLD, 14);
+    private final Font FONT_TEXT = new Font("Segoe UI", Font.PLAIN, 13);
+    private final Font FONT_BUTTON = new Font("Segoe UI", Font.BOLD, 12);
 
     public Main() {
         
-        setTitle("Sistema de Gestion Medica");
-        setSize(1280, 720);
+        setTitle("Sistema de Gestión Médica - Proyecto MEDC2");
+        setSize(1400, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
         // Aplicar LookAndFeel del Sistema Operativo
-        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception ignored) {}
+         try { 
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // Personalizar colores globales de UI
+            UIManager.put("TabbedPane.selected", COLOR_PRIMARY);
+            UIManager.put("Table.selectionBackground", COLOR_PRIMARY);
+            UIManager.put("Table.selectionForeground", Color.WHITE);
+        } catch (Exception ignored) {}
 
         // Contenedor Principal
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(COLOR_BG);
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        // Sistema de Pestañas
+       // Sistema de Pestañas con estilo mejorado
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(FONT_TITLE);
-        
+        tabbedPane.setBackground(COLOR_CARD);
+        tabbedPane.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199), 1));
         // --- AGREGAR PESTAÑAS ---
         tabbedPane.addTab("Vistas SQL", createPanelVistas());
         tabbedPane.addTab("Reportes (Procedimientos)", createPanelReportes());
@@ -53,30 +69,72 @@ public class Main extends JFrame {
     // PESTAÑA 1: VISTAS (Adaptadas a tus scripts)
     // =================================================================================
     private JPanel createPanelVistas() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        panel.setBackground(Color.WHITE);
+         JPanel panel = new JPanel(new BorderLayout(15, 15));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panel.setBackground(COLOR_BG);
 
-        // Panel de Botones (Grid Layout para organizar mejor tantas opciones)
-        JPanel btnPanel = new JPanel(new GridLayout(3, 3, 10, 10));
-        btnPanel.setBackground(Color.WHITE);
+        // Título de sección
+        JLabel titleLabel = new JLabel("📊 Consultas y Vistas SQL");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setForeground(COLOR_PRIMARY_DARK);
+        titleLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Panel de Botones con mejor distribución
+        JPanel btnPanel = new JPanel(new GridLayout(5, 3, 12, 12));
+        btnPanel.setBackground(COLOR_BG);
+        btnPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
+                "Seleccione una consulta",
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                FONT_SUBTITLE,
+                COLOR_PRIMARY_DARK
+            ),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
         
         // Botones basados en tus scripts SELECT
-        JButton btnCitasDesc = createStyledButton("Citas (Fecha DESC)");
-        JButton btnPacientesAsc = createStyledButton("Pacientes (Apellido ASC)");
-        JButton btnMedicosEsp = createStyledButton("Médicos (Especialidad ASC)");
-        JButton btnProdCant = createStyledButton("Productos (Cantidad DESC)");
-        JButton btnCitasAll = createStyledButton("Todas las Citas");
-        JButton btnPacientesAll = createStyledButton("Todos los Pacientes");
-        JButton btnMedicosAll = createStyledButton("Todos los Médicos");
-        JButton btnProdAll = createStyledButton("Todos los Productos");
-        JButton btnComprasAll = createStyledButton("Todas las Compras");
+       JButton btnCitasDesc = createStyledButton("📅 Citas Recientes");
+        btnCitasDesc.setToolTipText("Ver todas las citas ordenadas por fecha descendente");
+
+        JButton btnPacientesAsc = createStyledButton("👥 Pacientes A-Z");
+        btnPacientesAsc.setToolTipText("Ver pacientes ordenados alfabéticamente por apellido");
+
+        JButton btnMedicosEsp = createStyledButton("👨‍⚕️ Médicos por Especialidad");
+        btnMedicosEsp.setToolTipText("Ver médicos ordenados por especialidad");
+
+        JButton btnProdCant = createStyledButton("📦 Productos por Stock");
+        btnProdCant.setToolTipText("Ver productos ordenados por cantidad disponible");
+
+        JButton btnCitasAll = createStyledButton("📋 Todas las Citas");
+        btnCitasAll.setToolTipText("Ver el listado completo de citas médicas");
+
+        JButton btnPacientesAll = createStyledButton("👤 Todos los Pacientes");
+        btnPacientesAll.setToolTipText("Ver el listado completo de pacientes registrados");
+
+        JButton btnMedicosAll = createStyledButton("🩺 Todos los Médicos");
+        btnMedicosAll.setToolTipText("Ver el listado completo del personal médico");
+
+        JButton btnProdAll = createStyledButton("💊 Todos los Productos");
+        btnProdAll.setToolTipText("Ver el inventario completo de productos");
+
+        JButton btnComprasAll = createStyledButton("🛍️ Todas las Compras");
+        btnComprasAll.setToolTipText("Ver el historial completo de compras");
         
         // Botones de Agregación y JOINs
-        JButton btnCitasMedico = createStyledButton("Total Citas por Médico");
-        JButton btnCitasMotivo = createStyledButton("Total Citas por Motivo");
-        JButton btnCitasConsultorio = createStyledButton("Citas por Consultorio");
-        JButton btnUnion = createStyledButton("Vista Union (Compras/Prod)"); // Tu UNION
+        JButton btnCitasMedico = createStyledButton("📊 Citas por Médico");
+        btnCitasMedico.setToolTipText("Ver estadísticas de citas agrupadas por médico");
+
+        JButton btnCitasMotivo = createStyledButton("📈 Citas por Motivo");
+        btnCitasMotivo.setToolTipText("Ver estadísticas de citas agrupadas por motivo de consulta");
+
+        JButton btnCitasConsultorio = createStyledButton("🏥 Citas por Consultorio");
+        btnCitasConsultorio.setToolTipText("Ver estadísticas de citas agrupadas por consultorio");
+
+        JButton btnUnion = createStyledButton("🔗 Vista Unificada");
+        btnUnion.setToolTipText("Ver datos combinados de compras y productos (UNION)");
 
         JTable table = createStyledTable();
         
@@ -135,8 +193,29 @@ public class Main extends JFrame {
         btnPanel.add(btnProdAll);
         btnPanel.add(btnComprasAll);
 
-        panel.add(btnPanel, BorderLayout.NORTH);
-        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        // Panel contenedor para botones
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(COLOR_BG);
+        topPanel.add(titleLabel, BorderLayout.NORTH);
+        topPanel.add(btnPanel, BorderLayout.CENTER);
+
+        // Tabla con mejor estilo
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(189, 195, 199), 1),
+                "Resultados",
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                FONT_SUBTITLE,
+                COLOR_PRIMARY_DARK
+            ),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+
+        panel.add(topPanel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
 
