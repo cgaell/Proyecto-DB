@@ -176,6 +176,7 @@ public class Main extends JFrame {
 
         JTextField txtNombre = new JTextField(15);
         JTextField txtCantidad = new JTextField(5);
+        JTextField txtCategoria = new JTextField(10);
         JTable table = createStyledTable();
 
         JButton btnInsertar = createStyledButton("Agregar Producto");
@@ -183,12 +184,13 @@ public class Main extends JFrame {
 
         // Acción: Insertar Producto (Probando Trigger no_duplicados)
         btnInsertar.addActionListener(e -> {
-            String sql = "INSERT INTO productos (nombreProducto, cantidad) VALUES (?, ?)";
+            String sql = "INSERT INTO productos (nombreProducto, cantidad, categoria) VALUES (?, ?, ?)";
             try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 
                 pstmt.setString(1, txtNombre.getText());
                 pstmt.setInt(2, Integer.parseInt(txtCantidad.getText()));
+                pstmt.setString(3, txtCategoria.getText());
                 pstmt.executeUpdate();
                 
                 JOptionPane.showMessageDialog(this, "Producto agregado.");
@@ -214,6 +216,8 @@ public class Main extends JFrame {
         formPanel.add(txtNombre);
         formPanel.add(new JLabel("Cantidad:"));
         formPanel.add(txtCantidad);
+        formPanel.add(new JLabel("Categoria:"));
+        formPanel.add(txtCategoria);
         formPanel.add(btnInsertar);
         formPanel.add(btnActualizar);
 
@@ -313,7 +317,7 @@ public class Main extends JFrame {
         JTextField txtMail = new JTextField(15);
         JTextField txtDir = new JTextField(15);
 
-        JButton btnRegistrar = createStyledButton("Registrar Paciente Único");
+        JButton btnRegistrar = createStyledButton("Registrar Paciente");
         JTable table = createStyledTable();
 
         // Llamada al SP RegistrarPacienteUnico
