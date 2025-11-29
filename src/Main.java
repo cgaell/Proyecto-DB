@@ -226,7 +226,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                     // LÓGICA: Si es el 1er resultado -> Detalle. Si es el 2do -> Promedio
                     DefaultTableModel targetModel = (contadorTablas == 0) ? modelDetalle : modelPromedio;
 
-                    // Crear columnas dinámicamente
+                    
                     for (int i = 1; i <= colCount; i++) {
                         targetModel.addColumn(meta.getColumnLabel(i));
                     }
@@ -242,7 +242,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                 }
                 contadorTablas++;
             }
-            // ¡IMPORTANTE! Moverse al siguiente SELECT (el promedio)
+            
             hasResults = cstmt.getMoreResults();
         }
     } catch (SQLException e) {
@@ -422,7 +422,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                 if (hasResult) {
                     try (ResultSet rs = cstmt.getResultSet()) {
                         if (rs.next()) {
-                            // Obtenemos la primera columna sea cual sea el nombre (mensaje o registro)
+                            
                             String respuesta = rs.getString(1);
                             JOptionPane.showMessageDialog(this, respuesta);
                         }
@@ -504,7 +504,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         JButton btn = new JButton(text);
         btn.setFont(FONT_TEXT);
         btn.setBackground(COLOR_PRIMARY);
-        btn.setForeground(Color.BLACK); // CAMBIO: Color.WHITE por Color.BLACK
+        btn.setForeground(Color.BLACK); 
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
