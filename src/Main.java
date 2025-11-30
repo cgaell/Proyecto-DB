@@ -16,14 +16,14 @@ public class Main extends JFrame {
     public static final String PASSWORD = "root"; 
 
         // --- ESTILOS UI/UX MEJORADOS ---
-    private final Color COLOR_PRIMARY = new Color(41, 128, 185);      // Azul profesional
-    private final Color COLOR_PRIMARY_DARK = new Color(31, 97, 141);  // Azul hover
-    private final Color TEXT_COLOR = new Color(0, 0, 0);          // Gris oscuro texto
+    private final Color COLOR_PRIMARY = new Color(41, 128, 185);      // Azul 
+    private final Color COLOR_PRIMARY_DARK = new Color(31, 97, 141);  // Azul del hover
+    private final Color TEXT_COLOR = new Color(0, 0, 0);          // Gris oscuro
     private final Color COLOR_SUCCESS = new Color(39, 174, 96);       // Verde éxito
     private final Color COLOR_WARNING = new Color(243, 156, 18);      // Naranja advertencia
     private final Color COLOR_DANGER = new Color(231, 76, 60);        // Rojo error
     private final Color COLOR_BG = new Color(236, 240, 241);          // Gris claro fondo
-    private final Color COLOR_CARD = Color.WHITE;                     // Blanco para paneles
+    private final Color COLOR_CARD = Color.WHITE;                     // Blanco para tarjetas y paneles
     private final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 16);
     private final Font FONT_SUBTITLE = new Font("Segoe UI", Font.BOLD, 14);
     private final Font FONT_TEXT = new Font("Segoe UI", Font.PLAIN, 13);
@@ -31,12 +31,12 @@ public class Main extends JFrame {
 
     public Main() {
         
-        setTitle("Sistema de Gestión Médica - Proyecto MEDC2");
-        setSize(1400, 800);
+        setTitle("MEDC2");
+        setSize(1280, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Aplicar LookAndFeel del Sistema Operativo
+        // Look and Feel del sistema operativo
          try { 
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // Personalizar colores globales de UI
@@ -45,42 +45,42 @@ public class Main extends JFrame {
             UIManager.put("Table.selectionForeground", Color.WHITE);
         } catch (Exception ignored) {}
 
-        // Contenedor Principal
+        // panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(COLOR_BG);
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-       // Sistema de Pestañas con estilo mejorado
+       // vista de pestañas
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(FONT_TITLE);
         tabbedPane.setBackground(COLOR_CARD);
         tabbedPane.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199), 1));
-        // --- AGREGAR PESTAÑAS ---
+        // agregar pestañas
         tabbedPane.addTab("Vistas SQL", createPanelVistas());
         tabbedPane.addTab("Reportes (Procedimientos)", createPanelReportes());
         tabbedPane.addTab("Inventario (Triggers)", createPanelInventario());
         tabbedPane.addTab("Compras y Seguimiento", createPanelCompras());
-        tabbedPane.addTab("Gestión Pacientes", createPanelPacientes()); // Nueva pestaña
+        tabbedPane.addTab("Gestión Pacientes", createPanelPacientes());
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         add(mainPanel);
     }
 
     // =================================================================================
-    // PESTAÑA 1: VISTAS (Adaptadas a tus scripts)
+    // PESTAÑA 1: VISTAS SQL (Consultas SELECT, JOIN, UNION, ORDER BY, GROUP BY)
     // =================================================================================
     private JPanel createPanelVistas() {
          JPanel panel = new JPanel(new BorderLayout(15, 15));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panel.setBackground(COLOR_BG);
 
-        // Título de sección
+        // Titulo de la pestaña
         JLabel titleLabel = new JLabel("📊 Consultas y Vistas SQL");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(COLOR_PRIMARY_DARK);
         titleLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Panel de Botones con mejor distribución
+        // panel de botones
         JPanel btnPanel = new JPanel(new GridLayout(5, 3, 12, 12));
         btnPanel.setBackground(COLOR_BG);
         btnPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -95,7 +95,7 @@ public class Main extends JFrame {
             new EmptyBorder(10, 10, 10, 10)
         ));
         
-        // Botones basados en tus scripts SELECT
+        //botones de consultas SELECT simples con ORDER BY
        JButton btnCitasDesc = createStyledButton("📅 Citas Recientes");
         btnCitasDesc.setToolTipText("Ver todas las citas ordenadas por fecha descendente");
 
@@ -123,7 +123,7 @@ public class Main extends JFrame {
         JButton btnComprasAll = createStyledButton("🛍️ Todas las Compras");
         btnComprasAll.setToolTipText("Ver el historial completo de compras");
         
-        // Botones de Agregación y JOINs
+        // Botones de JOINS Y GROUP BY
         JButton btnCitasMedico = createStyledButton("📊 Citas por Médico");
         btnCitasMedico.setToolTipText("Ver estadísticas de citas agrupadas por médico");
 
@@ -140,39 +140,39 @@ public class Main extends JFrame {
         
         // --- ACCIONES ---
         
-        // 1. SELECT idcita, fecha, motivo, hora FROM cita ORDER BY fecha DESC;
+        
         btnCitasDesc.addActionListener(e -> llenarTabla(table, 
             "SELECT idcita, fecha, motivo, hora FROM cita ORDER BY fecha DESC"));
 
-        // 2. SELECT idpacientes... FROM paciente ORDER BY apellidoPaterno ASC;
+        
         btnPacientesAsc.addActionListener(e -> llenarTabla(table, 
             "SELECT idpacientes, nombrePaciente, apellidoPaterno, apellidoMaterno FROM paciente ORDER BY apellidoPaterno ASC"));
 
-        // 3. SELECT idmedicos... FROM medico ORDER BY especialidad ASC;
+        
         btnMedicosEsp.addActionListener(e -> llenarTabla(table, 
             "SELECT idmedicos, nombreMedico, especialidad FROM medico ORDER BY especialidad ASC"));
 
-        // 4. SELECT nombreProducto, cantidad FROM productos ORDER BY cantidad DESC;
+        
         btnProdCant.addActionListener(e -> llenarTabla(table, 
             "SELECT nombreProducto, cantidad FROM productos ORDER BY cantidad DESC"));
 
-        // 5. JOIN Medico - Cita (COUNT)
+        
         btnCitasMedico.addActionListener(e -> llenarTabla(table, 
             "SELECT m.nombreMedico, COUNT(c.idcita) AS total_citas FROM medico m LEFT JOIN cita c ON m.idmedicos = c.id_medico GROUP BY m.idmedicos, m.nombreMedico"));
 
-        // 6. Citas por Motivo
+        
         btnCitasMotivo.addActionListener(e -> llenarTabla(table, 
             "SELECT motivo, COUNT(*) AS total FROM cita GROUP BY motivo"));
 
-        // 7. Citas por Consultorio
+        
         btnCitasConsultorio.addActionListener(e -> llenarTabla(table, 
             "SELECT co.direccion AS consultorio, COUNT(c.idcita) AS total_citas FROM consultorio co LEFT JOIN cita c ON co.idconsultorio = c.id_consultorio GROUP BY co.idconsultorio, co.direccion"));
 
-        // 8. UNION Query
+        
         btnUnion.addActionListener(e -> llenarTabla(table, 
             "SELECT idcompras AS ID, cantidad FROM compras UNION SELECT idproductos AS ID, cantidad FROM productos"));
 
-            //Botones para ver todas las tablas
+            //botones para ver todas las tablas
         btnCitasAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM cita"));
         btnPacientesAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM paciente"));
         btnMedicosAll.addActionListener(e -> llenarTabla(table, "SELECT * FROM medico"));
@@ -199,7 +199,7 @@ public class Main extends JFrame {
         topPanel.add(titleLabel, BorderLayout.NORTH);
         topPanel.add(btnPanel, BorderLayout.CENTER);
 
-        // Tabla con mejor estilo
+        // Tablas de resultados
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(
@@ -220,14 +220,14 @@ public class Main extends JFrame {
     }
 
     // =================================================================================
-    // PESTAÑA 2: REPORTES (Stored Procedures Actualizados)
+    // PESTAÑA 2: REPORTES (Procedimientos Almacenados)
     // =================================================================================
     private JPanel createPanelReportes() {
         JPanel panel = new JPanel(new BorderLayout(15, 15));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panel.setBackground(COLOR_BG);
 
-        // Título de sección
+        // Titulo de la pestaña
         JLabel titleLabel = new JLabel("📈 Reportes y Procedimientos Almacenados");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(COLOR_PRIMARY_DARK);
@@ -251,12 +251,12 @@ public class Main extends JFrame {
         JButton btnReporteClientes = createStyledButton("👥 Reporte Clientes", COLOR_PRIMARY);
         btnReporteClientes.setToolTipText("Generar reporte de clientes para el año especificado");
 
-        // SP: comprasdiarias
+        // ComprasDiarias
         btnComprasDiarias.addActionListener(e -> {
             cargarReporteConPromedio(tableDetalle, tablePromedio, txtFecha.getText());
         });
 
-        // SP: ReporteClientes
+        // ReporteClientes
         btnReporteClientes.addActionListener(e -> {
         ((DefaultTableModel) tablePromedio.getModel()).setRowCount(0);
         ((DefaultTableModel) tablePromedio.getModel()).setColumnCount(0);
@@ -289,14 +289,7 @@ public class Main extends JFrame {
         scrollPanelDetalle.getViewport().setBackground(Color.WHITE);
         
         JScrollPane scrollPanelPromedio = new JScrollPane(tablePromedio);
-        scrollPanelPromedio.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(COLOR_SUCCESS, 1),
-            "📊 Promedio de Compras por Cliente",
-            TitledBorder.LEFT,
-            TitledBorder.TOP,
-            FONT_SUBTITLE,
-            COLOR_PRIMARY_DARK
-        ));
+        scrollPanelPromedio.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(COLOR_SUCCESS, 1), "📊 Promedio de Compras por Cliente", TitledBorder.LEFT, TitledBorder.TOP, FONT_SUBTITLE, COLOR_PRIMARY_DARK));
         scrollPanelPromedio.setPreferredSize(new Dimension(0, 220));
         scrollPanelPromedio.getViewport().setBackground(Color.WHITE);
 
@@ -316,8 +309,7 @@ public class Main extends JFrame {
         return panel;
     }
 /**
- * NUEVO MÉTODO AUXILIAR: Maneja múltiples resultados (ResultSets) de un SP.
- * Llena tableDetalle con el primer SELECT y tablePromedio con el segundo.
+ * Carga el reporte de compras diarias junto con el promedio por cliente en las tablas proporcionadas.
  */
 private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio, String fecha) {
     DefaultTableModel modelDetalle = (DefaultTableModel) tableDetalle.getModel();
@@ -332,18 +324,18 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
 
         cstmt.setString(1, fecha);
         
-        // Ejecutar y verificar si hay un primer resultado
+        // verifica si hay un resultado
         boolean hasResults = cstmt.execute(); 
         int contadorTablas = 0;
 
-        // BUCLE: Recorremos todos los resultados que envíe el SP
+        // Recorre los resultados que envio el procedimiento
         while (hasResults || cstmt.getUpdateCount() != -1) {
             if (hasResults) {
                 try (ResultSet rs = cstmt.getResultSet()) {
                     ResultSetMetaData meta = rs.getMetaData();
                     int colCount = meta.getColumnCount();
                     
-                    // LÓGICA: Si es el 1er resultado -> Detalle. Si es el 2do -> Promedio
+                    //  Si es el 1er resultado es Detalle. Si es el 2do es Promedio
                     DefaultTableModel targetModel = (contadorTablas == 0) ? modelDetalle : modelPromedio;
 
                     
@@ -377,7 +369,8 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panel.setBackground(COLOR_BG);
 
-        // Título de sección
+
+        // Titulo de la pestaña
         JLabel titleLabel = new JLabel("📦 Gestión de Inventario (Triggers)");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(COLOR_PRIMARY_DARK);
@@ -397,7 +390,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         JButton btnActualizar = createStyledButton("🔄 Ver Todos", COLOR_PRIMARY);
         btnActualizar.setToolTipText("Actualizar y mostrar todos los productos del inventario");
 
-        // Acción: Insertar Producto (Probando Trigger no_duplicados)
+        // Acción: Insertar Producto (Probando trigger no_duplicados)
         btnInsertar.addActionListener(e -> {
             String sql = "INSERT INTO productos (nombreProducto, cantidad, categoria) VALUES (?, ?, ?)";
             try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
@@ -412,7 +405,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                 llenarTabla(table, "SELECT * FROM productos ORDER BY idproductos DESC");
                 
             } catch (SQLException ex) {
-                // Captura SIGNAL SQLSTATE '45000' del trigger
+                // error 45000 del trigger
                 if ("45000".equals(ex.getSQLState())) {
                     JOptionPane.showMessageDialog(this, "¡ALERTA TRIGGER!\n" + ex.getMessage(), "Producto Duplicado", JOptionPane.WARNING_MESSAGE);
                 } else {
@@ -449,13 +442,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(189, 195, 199), 1),
-            "📊 Productos en Inventario",
-            TitledBorder.LEFT,
-            TitledBorder.TOP,
-            FONT_SUBTITLE,
-            COLOR_PRIMARY_DARK
-        ));
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1), "📊 Productos en Inventario", TitledBorder.LEFT, TitledBorder.TOP, FONT_SUBTITLE, COLOR_PRIMARY_DARK));
         scrollPane.getViewport().setBackground(Color.WHITE);
 
         JPanel topContainer = new JPanel(new BorderLayout(0, 15));
@@ -478,13 +465,13 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panel.setBackground(COLOR_BG);
 
-        // Título de sección
+        // Titulo de la pestaña
         JLabel titleLabel = new JLabel("🛒 Compras y Seguimiento (Triggers)");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(COLOR_PRIMARY_DARK);
         titleLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
 
-        // Formulario con tooltips
+        // formulario de compras
         JTextField txtIdPaciente = createStyledTextField("", 8);
         txtIdPaciente.setToolTipText("ID del paciente");
         JTextField txtIdProducto = createStyledTextField("", 8);
@@ -516,7 +503,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                 pstmt.setInt(1, Integer.parseInt(txtIdPaciente.getText()));
                 pstmt.setInt(2, Integer.parseInt(txtCantidad.getText()));
                 pstmt.setDouble(3, Double.parseDouble(txtPrecio.getText()));
-                pstmt.setInt(4, Integer.parseInt(txtIdProducto.getText())); // Necesario para el trigger actualizar_producto
+                pstmt.setInt(4, Integer.parseInt(txtIdProducto.getText())); // transforma el producto a integer para poder realizar el trigger
                 
                 pstmt.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Compra registrada.\n- Inventario actualizado.\n- Seguimiento creado.");
@@ -534,14 +521,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         formPanel.setBackground(COLOR_CARD);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_PRIMARY, 2),
-            BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(5, 10, 5, 10), "Nueva Compra",
-                TitledBorder.LEFT,
-                TitledBorder.TOP,
-                FONT_SUBTITLE,
-                COLOR_PRIMARY_DARK
-            )
-        ));
+            BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10), "Nueva Compra", TitledBorder.LEFT, TitledBorder.TOP, FONT_SUBTITLE, COLOR_PRIMARY_DARK)));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8,8,8,8);
         
@@ -601,7 +581,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panel.setBackground(COLOR_BG);
 
-        // Título de sección
+        // Título de la pestaña
         JLabel titleLabel = new JLabel("👤 Gestión de Pacientes");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(COLOR_PRIMARY_DARK);
@@ -624,7 +604,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         btnRegistrar.setToolTipText("Registrar un nuevo paciente verificando que no exista duplicado");
         JTable table = createStyledTable();
 
-        // Llamada al SP RegistrarPacienteUnico
+        // hace el call al precedimiento RegistrarPacienteUnico
         btnRegistrar.addActionListener(e -> {
             String call = "{CALL RegistrarPacienteUnico(?, ?, ?, ?, ?, ?)}";
             try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
@@ -639,7 +619,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
 
                 boolean hasResult = cstmt.execute();
                 
-                // El SP devuelve un SELECT con un mensaje ('mensaje' si error, 'registro' si éxito)
+                // El precedimiento devuelve un SELECT con un mensaje ('mensaje' si error, 'registro' si éxito)
                 if (hasResult) {
                     try (ResultSet rs = cstmt.getResultSet()) {
                         if (rs.next()) {
@@ -778,7 +758,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
         ));
 
-        //Hover 
+        //creacion del hover (ciando el mouse esta encima del boton) 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn.setBackground(bgColor.darker());
@@ -824,7 +804,7 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         field.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
         field.setPreferredSize(new Dimension(field.getPreferredSize().width, 38));
 
-        // Focus effects con repaint para actualizar el borde
+        // efectos focus para repintar los bordes de la caja de texto
         field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 field.repaint();
@@ -852,14 +832,14 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
         table.setShowGrid(true);
         table.setIntercellSpacing(new Dimension(1, 1));
 
-        // Estilo del header
+        // Formato del header
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
         table.getTableHeader().setBackground(COLOR_PRIMARY_DARK);
         table.getTableHeader().setForeground(Color.WHITE);
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
         table.getTableHeader().setBorder(BorderFactory.createLineBorder(COLOR_PRIMARY_DARK));
 
-        // Alternating row colors
+        // Alternar colores de filas
         table.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
             @Override
             public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
@@ -867,9 +847,9 @@ private void cargarReporteConPromedio(JTable tableDetalle, JTable tablePromedio,
                 java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (!isSelected) {
                     c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 249, 250));
-                    c.setForeground(new Color(44, 62, 80)); // Dark text color for readability
+                    c.setForeground(new Color(44, 62, 80)); 
                 } else {
-                    c.setForeground(Color.WHITE); // White text when selected
+                    c.setForeground(Color.WHITE); 
                 }
                 setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
                 return c;
