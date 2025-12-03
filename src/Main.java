@@ -1,84 +1,48 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+package src;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+public class Main {
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/proyecto_medc2";
+    public static final String USER = "root";
+    public static final String PASSWORD = "root";
+public static void main(String[] args) {
+    System.out.println("Hello, World!");
+    System.out.println("Hola Rafa!");
 
-public class InterfazMedicos extends JFrame {
-    
-    private static final String URL = "jdbc:mysql://localhost:3306/proyecto_medc2";
-    private static final String USER = "root";
-    private static final String PASS = "RafaRapter3ooo."; 
+    //CONEXION A LA BASE DE DATOS
+    try {
+        Connection conectar = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+        System.out.println("Conexion exitosa");
 
-    public InterfazMedicos() {
-
-        setTitle("Menú Proyecto Médicos");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1, 10, 10));
-
-        JButton btnOpcion1 = new JButton("Ejecutar Procedimiento 1");
-        JButton btnOpcion2 = new JButton("Ejecutar Procedimiento 2");
-        JButton btnOpcion3 = new JButton("Otra opción");
-        JButton btnSalir = new JButton("Salir");
-
-        panel.add(btnOpcion1);
-        panel.add(btnOpcion2);
-        panel.add(btnOpcion3);
-        panel.add(btnSalir);
-
-        add(panel);
-
-        // ----------------------------
-        // OPCIÓN 1: procedimiento1
-        // ----------------------------
-        btnOpcion1.addActionListener(e -> {
-            try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
-
-                CallableStatement stmt = conn.prepareCall("{ CALL procedimiento1() }");
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "procedimiento1 ejecutado correctamente");
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, 
-                    "Error ejecutando procedimiento1:\n" + ex.getMessage());
-            }
-        });
-
-        // ----------------------------
-        // OPCIÓN 2: procedimiento2 ✔ CORREGIDO
-        // ----------------------------
-        btnOpcion2.addActionListener(e -> {
-            try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
-
-                CallableStatement stmt = conn.prepareCall("{ CALL procedimiento2() }");
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "procedimiento2 ejecutado correctamente");
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, 
-                    "❌ Error ejecutando procedimiento2:\n" + ex.getMessage());
-            }
-        });
-
-        // ----------------------------
-        // OPCIÓN 3
-        // ----------------------------
-        btnOpcion3.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Opción 3 ejecutada");
-        });
-
-        // ----------------------------
-        // SALIR
-        // ----------------------------
-        btnSalir.addActionListener(e -> System.exit(0));
+    } catch (SQLException e) {
+        System.out.println("Error de conexion: " + e.getErrorCode());
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new InterfazMedicos().setVisible(true));
+    //CONSULTA A LA BASE DE DATOS
+    try {
+        Connection conectar = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+        String consulta = "SELECT * FROM paciente";
+        Statement statement = conectar.createStatement();
+        ResultSet resultado = statement.executeQuery(consulta);
+
+        while (resultado.next()) {
+            System.out.println("idpacientes: " + resultado.getInt("idpacientes"));
+            System.out.println("nombrePaciente: " + resultado.getString("nombrePaciente"));
+            System.out.println("apellidoPaterno: " + resultado.getString("apellidoPaterno"));
+            System.out.println("apellidoMaterno: " + resultado.getString("apellidoMaterno"));
+            System.out.println("telefono: " + resultado.getString("telefono"));
+            System.out.println("correo: " + resultado.getString("correo"));
+            System.out.println("direccion: " + resultado.getString("direccion"));
+        }
+
+        resultado.close();
+        statement.close();
+        conectar.close();
+    } catch (SQLException e) {
+        System.out.println("Error en la consulta: " + e.getMessage());
     }
+}
 }
